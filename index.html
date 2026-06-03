@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>LAAA Team — Road to $20M</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  :root{
+    --navy-900:#0b1f3a; --navy-800:#15294a; --navy:#1f3864;
+    --orange:#e8722b; --orange-dk:#cf5f1c;
+    --gold:#c9a44c;
+    --bg:#eef1f6; --card:#ffffff; --line:#dfe4ec;
+    --ink:#1a2433; --muted:#6b7787;
+    --green:#1f8a4c; --green-bg:#e7f4ec;
+    --track:#e7ebf2;
+    --shadow:0 1px 3px rgba(16,33,61,.08),0 8px 24px rgba(16,33,61,.06);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1060px;margin:0 auto;padding:0 20px}
+
+  /* ===== HERO ===== */
+  header.hero{position:relative;overflow:hidden;background:linear-gradient(135deg,var(--navy-900),var(--navy));color:#fff}
+  .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:0;align-items:stretch}
+  @media(max-width:780px){.hero-grid{grid-template-columns:1fr}}
+  .hero-copy{padding:38px 0 38px 0}
+  .hero-copy .wrap2{padding:0 14px 0 0}
+  .eyebrow{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+  .hero h1{font-size:clamp(30px,5vw,46px);font-weight:900;letter-spacing:-.02em;margin:8px 0 6px;line-height:1.02}
+  .hero h1 .amt{color:var(--orange)}
+  .hero p.sub{margin:0;color:#b9c5d9;font-size:15px;max-width:42ch}
+  .hero-photo{position:relative;min-height:240px;background:#0a1830}
+  .hero-photo img{width:100%;height:100%;object-fit:cover;display:block;position:absolute;inset:0}
+  .hero-photo .fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;
+    color:#42597d;background:radial-gradient(circle at 70% 30%,#13294a,#0a1830);font-size:13px;text-align:center;padding:20px}
+  .hero-photo .fallback .pig{font-size:54px;margin-bottom:8px}
+  .ribbon{position:absolute;left:0;bottom:0;background:rgba(11,31,58,.82);color:#fff;font-weight:800;
+    font-size:12px;letter-spacing:.1em;text-transform:uppercase;padding:7px 14px;border-top-right-radius:10px;backdrop-filter:blur(2px)}
+  .ribbon b{color:var(--gold)}
+
+  main{padding:26px 0 60px}
+
+  /* big thermometer */
+  .thermo-card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:26px;margin-bottom:18px}
+  .thermo-top{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+  .thermo-top .now .k{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:700}
+  .thermo-top .now .v{font-size:40px;font-weight:900;letter-spacing:-.02em;line-height:1.05}
+  .thermo-top .now .v small{font-size:18px;color:var(--muted);font-weight:700}
+  .thermo-top .goal{text-align:right}
+  .thermo-top .goal .k{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:700}
+  .thermo-top .goal .v{font-size:26px;font-weight:900;color:var(--navy);letter-spacing:-.01em}
+
+  .track{position:relative;height:38px;background:var(--track);border-radius:999px;overflow:hidden;border:1px solid var(--line)}
+  .seg{position:absolute;top:0;bottom:0;left:0;height:100%}
+  .seg.base{background:linear-gradient(90deg,#22467e,var(--navy));border-radius:999px 0 0 999px}
+  .seg.add{background:linear-gradient(90deg,var(--orange),var(--orange-dk));transition:width .7s cubic-bezier(.2,.7,.2,1)}
+  .seg.add.done{background:linear-gradient(90deg,#2bb673,var(--green))}
+  .track .pctlabel{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:13px;font-weight:800;color:var(--navy);z-index:2}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:12px;font-size:12.5px;color:var(--muted);font-weight:600}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .dot{width:11px;height:11px;border-radius:3px;display:inline-block}
+  .dot.base{background:var(--navy)} .dot.add{background:var(--orange)} .dot.gap{background:var(--track);border:1px solid #cfd6e1}
+
+  .gapline{margin-top:16px;font-size:15px}
+  .gapline b{font-weight:800}
+  .gapline .big{color:var(--orange-dk);font-weight:900}
+  .gapline.done .big{color:var(--green)}
+
+  /* stat cards */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+  @media(max-width:780px){.stats{grid-template-columns:repeat(2,1fr)}}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;box-shadow:var(--shadow)}
+  .stat .k{font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:700}
+  .stat .v{font-size:21px;font-weight:800;margin-top:5px;letter-spacing:-.01em}
+  .stat .v.muted{color:var(--muted)}
+  .stat .note{font-size:11.5px;color:var(--muted);margin-top:4px}
+
+  .callout{border-radius:12px;padding:16px 18px;font-size:14px;margin-bottom:18px;border:1px solid;background:#fff7f1;border-color:#f2d3bb;color:#8a4418}
+  .callout.done{background:var(--green-bg);border-color:#bfe3cd;color:#1c5e38}
+  .callout b{font-weight:800}
+
+  /* inputs / loader */
+  .setup{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
+  @media(max-width:780px){.setup{grid-template-columns:1fr}}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:20px 22px}
+  .panel h2{font-size:15px;margin:0 0 4px}
+  .panel p{margin:0 0 12px;font-size:12.5px;color:var(--muted)}
+  .money-field{position:relative;display:flex;align-items:center}
+  .money-field .dollar{position:absolute;left:14px;font-size:20px;font-weight:700;color:var(--muted)}
+  #baseline{width:100%;font-family:inherit;font-size:22px;font-weight:700;color:var(--navy);
+    padding:11px 14px 11px 28px;border:2px solid var(--line);border-radius:10px;outline:none;transition:border-color .15s}
+  #baseline:focus{border-color:var(--orange)}
+  .priv{margin-top:9px;font-size:12px;color:var(--muted)}
+  .priv b{color:var(--green)}
+  #drop{border:2px dashed #c3ccda;border-radius:12px;padding:18px;text-align:center;cursor:pointer;transition:.15s;background:#fafbfd}
+  #drop:hover,#drop.drag{border-color:var(--orange);background:#fff7f1}
+  #drop .big{font-weight:600}
+  #drop .sm{font-size:12px;color:var(--muted);margin-top:3px}
+  #fileInput{display:none}
+  .fileok{display:none;align-items:center;gap:8px;margin-top:10px;font-size:13px;color:var(--green);font-weight:600}
+  .err{display:none;margin-top:10px;background:#fdecea;color:#c0392b;font-size:13px;font-weight:600;padding:10px 12px;border-radius:8px}
+
+  table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+  caption{caption-side:top;text-align:left;font-size:13px;font-weight:700;color:var(--ink);padding:0 2px 8px}
+  th,td{padding:10px 14px;font-size:13px;text-align:right;border-bottom:1px solid var(--line)}
+  th:first-child,td:first-child{text-align:left}
+  thead th{background:var(--navy);color:#fff;font-weight:600;font-size:12px;border-bottom:none}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr.totrow td{font-weight:800;background:#f7f9fc;border-top:2px solid var(--navy)}
+  td.zero{color:#b3bcca}
+  #agentWrap{display:none}
+
+  footer{font-size:12px;color:var(--muted);margin-top:24px;text-align:center;line-height:1.6}
+  footer .lock{color:var(--green);font-weight:600}
+  .asof{font-size:12px;color:var(--muted);margin-top:6px}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <div class="wrap2">
+          <div class="eyebrow">LAAA Team · Marcus &amp; Millichap — Encino</div>
+          <h1>The Road to <span class="amt">$20,000,000</span></h1>
+          <p class="sub">Team gross commission goal — here's how close every closing this year brings us to twenty.</p>
+        </div>
+      </div>
+      <div class="hero-photo">
+        <img src="piggy.jpg" alt="LAAA team piggy bank — Teamwork Pays Off" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+        <div class="fallback" style="display:none"><div class="pig">🐷</div>Teamwork Pays Off</div>
+        <div class="ribbon">Teamwork <b>Pays Off</b></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <!-- setup: starting line + file -->
+    <div class="setup">
+      <div class="panel">
+        <h2>Starting line (Jan 1, 2026)</h2>
+        <p>Team cumulative gross at the start of the year (from the 1/1/2026 Gross Commission export).</p>
+        <div class="money-field">
+          <span class="dollar">$</span>
+          <input id="baseline" inputmode="numeric" placeholder="enter $ amount" autocomplete="off" />
+        </div>
+        <p class="priv"><b>🔒 Private</b> — saved on this device only, never published to this page.</p>
+      </div>
+      <div class="panel">
+        <h2>Live 2026 progress</h2>
+        <p>Drop in <b>2026 Total Gross &amp; Pipeline.xlsm</b> to stack this year's closings on top of the starting line.</p>
+        <div id="drop">
+          <div class="big">📄 Drop the .xlsm here</div>
+          <div class="sm">or click to browse · parsed in your browser, never uploaded</div>
+        </div>
+        <input type="file" id="fileInput" accept=".xlsm,.xlsx,.xls" />
+        <div class="fileok" id="fileok">✓ <span id="fileokName"></span> loaded</div>
+        <div class="err" id="err"></div>
+      </div>
+    </div>
+
+    <!-- thermometer -->
+    <div class="thermo-card">
+      <div class="thermo-top">
+        <div class="now">
+          <div class="k">Team gross to date</div>
+          <div class="v" id="nowVal">$0</div>
+        </div>
+        <div class="goal">
+          <div class="k">Goal</div>
+          <div class="v">$20,000,000</div>
+        </div>
+      </div>
+      <div class="track">
+        <div class="seg base" id="segBase" style="width:0%"></div>
+        <div class="seg add" id="segAdd" style="width:0%"></div>
+        <div class="pctlabel" id="pctLabel">0%</div>
+      </div>
+      <div class="legend">
+        <span><i class="dot base"></i> Starting line (1/1/2026)</span>
+        <span><i class="dot add"></i> Closed in 2026</span>
+        <span><i class="dot gap"></i> Remaining to $20M</span>
+      </div>
+      <div class="gapline" id="gapLine"></div>
+    </div>
+
+    <!-- stats -->
+    <div class="stats">
+      <div class="stat"><div class="k">Starting line (1/1/26)</div><div class="v muted" id="sBase">—</div><div class="note">cumulative team gross</div></div>
+      <div class="stat"><div class="k">Closed in 2026</div><div class="v" id="sClosed">$0</div><div class="note">added this year</div></div>
+      <div class="stat"><div class="k">In escrow now</div><div class="v muted" id="sEscrow">$0</div><div class="note">near-certain pipeline</div></div>
+      <div class="stat"><div class="k">Remaining to $20M</div><div class="v" id="sGap">—</div><div class="note">gross still to close</div></div>
+    </div>
+
+    <div class="callout" id="callout"></div>
+
+    <div id="agentWrap">
+      <table id="agentTbl">
+        <caption>2026 closed gross by team member</caption>
+        <thead><tr><th>Team Member</th><th>Q1</th><th>Q2</th><th>Q3</th><th>Q4</th><th>Closed 2026</th><th>In Escrow</th></tr></thead>
+        <tbody id="agentBody"></tbody>
+      </table>
+      <div class="asof" id="asof"></div>
+    </div>
+
+    <footer>
+      <span class="lock">🔒 Private</span> — your figures are entered and parsed entirely in this browser. Nothing is uploaded or stored on any server, and no dollar amounts are baked into this page.<br/>
+      LAAA Team internal goal tracker · live progress from the Summaries tab.
+    </footer>
+  </div>
+</main>
+
+<script>
+const GOAL = 20000000;
+const LS_BASE = 'laaa_baseline_2026';
+const fmt = n => (n<0?'-':'') + '$' + Math.round(Math.abs(n)).toLocaleString('en-US');
+const fmtM = n => '$' + (n/1e6).toFixed(2) + 'M';
+
+let DATA = null;
+
+// ---- baseline input (persisted locally) ----
+const baseEl = document.getElementById('baseline');
+function readBase(){ const v=parseFloat((baseEl.value||'').replace(/[^0-9.]/g,'')); return isNaN(v)?0:v; }
+function fmtBase(){ const v=readBase(); baseEl.value = v? v.toLocaleString('en-US') : ''; }
+const savedBase = localStorage.getItem(LS_BASE);
+if(savedBase) baseEl.value = Number(savedBase).toLocaleString('en-US');
+baseEl.addEventListener('input', ()=>{ localStorage.setItem(LS_BASE, String(readBase())); render(); });
+baseEl.addEventListener('blur', fmtBase);
+
+// ---- file handling ----
+const drop=document.getElementById('drop'), fileInput=document.getElementById('fileInput'), errEl=document.getElementById('err');
+drop.addEventListener('click', ()=>fileInput.click());
+['dragenter','dragover'].forEach(e=>drop.addEventListener(e,ev=>{ev.preventDefault();drop.classList.add('drag');}));
+['dragleave','drop'].forEach(e=>drop.addEventListener(e,ev=>{ev.preventDefault();drop.classList.remove('drag');}));
+drop.addEventListener('drop', ev=>{ if(ev.dataTransfer.files.length) handleFile(ev.dataTransfer.files[0]); });
+fileInput.addEventListener('change', ()=>{ if(fileInput.files.length) handleFile(fileInput.files[0]); });
+function showErr(m){ errEl.textContent='⚠ '+m; errEl.style.display='block'; }
+
+function handleFile(file){
+  errEl.style.display='none';
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const wb=XLSX.read(new Uint8Array(e.target.result),{type:'array'});
+      DATA=parseWorkbook(wb,file);
+      document.getElementById('fileok').style.display='flex';
+      document.getElementById('fileokName').textContent=file.name;
+      render();
+    }catch(ex){ showErr(ex.message||'Could not read this file.'); console.error(ex); }
+  };
+  reader.onerror=()=>showErr('Could not read this file.');
+  reader.readAsArrayBuffer(file);
+}
+
+function parseWorkbook(wb,file){
+  const sheet=wb.Sheets['Summaries'];
+  if(!sheet) throw new Error("No 'Summaries' tab found in this workbook.");
+  const rows=XLSX.utils.sheet_to_json(sheet,{header:1,blankrows:false,defval:null});
+  const hdr=rows.findIndex(r=>r&&String(r[0]).trim()==='Team Member');
+  const tot=rows.findIndex(r=>r&&String(r[0]).trim()==='Totals');
+  if(hdr<0||tot<0||tot<=hdr) throw new Error("Couldn't locate the team table on the Summaries tab.");
+  const num=v=>(typeof v==='number')?v:(v==null||v===''?0:(parseFloat(String(v).replace(/[^0-9.\-]/g,''))||0));
+  const agents=[];
+  for(let i=hdr+1;i<tot;i++){
+    const r=rows[i]; if(!r||r[0]==null||String(r[0]).trim()==='') continue;
+    agents.push({name:String(r[0]).trim(),q:[num(r[1]),num(r[2]),num(r[3]),num(r[4])],closed:num(r[5]),escrow:num(r[9]),listing:num(r[13])});
+  }
+  const T=rows[tot];
+  const totals={q:[num(T[1]),num(T[2]),num(T[3]),num(T[4])],closed:num(T[5]),escrow:num(T[9]),listing:num(T[13])};
+  if(!totals.closed) totals.closed=agents.reduce((s,a)=>s+a.closed,0);
+  if(!totals.escrow) totals.escrow=agents.reduce((s,a)=>s+a.escrow,0);
+  return {agents,totals,fileName:file.name};
+}
+
+// ---- render ----
+function render(){
+  const baseline = readBase();
+  const closed2026 = DATA ? DATA.totals.closed : 0;
+  const escrow = DATA ? DATA.totals.escrow : 0;
+  const progress = baseline + closed2026;
+  const gap = GOAL - progress;
+
+  document.getElementById('nowVal').innerHTML = fmt(progress) + ' <small>/ '+fmtM(GOAL)+'</small>';
+  const pctBase = Math.max(0, Math.min(100, baseline/GOAL*100));
+  const pctAdd  = Math.max(0, Math.min(100-pctBase, closed2026/GOAL*100));
+  document.getElementById('segBase').style.width = pctBase+'%';
+  const segAdd=document.getElementById('segAdd');
+  segAdd.style.left = pctBase+'%';
+  segAdd.style.width = pctAdd+'%';
+  const pctTotal = progress/GOAL*100;
+  document.getElementById('pctLabel').textContent = pctTotal.toFixed(1)+'%';
+  segAdd.classList.toggle('done', gap<=0 && progress>0);
+
+  document.getElementById('sBase').textContent = baseline? fmt(baseline) : '—';
+  document.getElementById('sClosed').textContent = fmt(closed2026);
+  document.getElementById('sEscrow').textContent = fmt(escrow);
+  document.getElementById('sGap').textContent = baseline||DATA ? (gap>0? fmt(gap) : '✓ Reached') : '—';
+
+  const gl=document.getElementById('gapLine'), co=document.getElementById('callout');
+  if(!baseline && !DATA){
+    gl.className='gapline';
+    gl.innerHTML = `Enter the <b>starting line</b> and drop in the pipeline file to see how close the team is to <b>$20M</b>.`;
+    co.className='callout';
+    co.innerHTML = `📌 Start by entering the <b>Jan 1, 2026</b> cumulative gross on the left, then drop in the Gross &amp; Pipeline file to add this year's closings.`;
+    document.getElementById('agentWrap').style.display = DATA?'block':'none';
+    return;
+  }
+  if(gap>0){
+    gl.className='gapline';
+    gl.innerHTML = `<span class="big">${fmt(gap)}</span> in gross commission still to close to hit <b>$20M</b> — the team is <b>${pctTotal.toFixed(1)}%</b> of the way there.`;
+    co.className='callout';
+    if(!DATA){
+      co.innerHTML = `📌 That's the <b>starting line</b>. Drop in the Gross &amp; Pipeline file above to add 2026's closings and watch the bar move.`;
+    } else if(escrow>=gap){
+      co.innerHTML = `🔥 With <b>${fmt(closed2026)}</b> closed in 2026, you're <b>${fmt(gap)}</b> from $20M — and your <b>${fmt(escrow)}</b> in current escrows would <b>cross the finish line</b> if they all close.`;
+    } else if(escrow>0){
+      co.innerHTML = `📈 <b>${fmt(closed2026)}</b> closed in 2026. Your <b>${fmt(escrow)}</b> in escrow covers <b>${(escrow/gap*100).toFixed(0)}%</b> of the remaining gap; after those close you'd need <b>${fmt(gap-escrow)}</b> more to reach $20M.`;
+    } else {
+      co.innerHTML = `📈 <b>${fmt(closed2026)}</b> closed in 2026. <b>${fmt(gap)}</b> to go to reach $20M.`;
+    }
+  } else {
+    gl.className='gapline done';
+    gl.innerHTML = `🎉 <span class="big">Goal reached!</span> Team gross of <b>${fmt(progress)}</b> is <b>${fmt(Math.abs(gap))}</b> past the $20M mark.`;
+    co.className='callout done';
+    co.innerHTML = `🏆 <b>$20,000,000 achieved.</b> Outstanding work, team.`;
+  }
+
+  // agent table
+  const wrap=document.getElementById('agentWrap');
+  if(DATA){
+    wrap.style.display='block';
+    const body=document.getElementById('agentBody'); body.innerHTML='';
+    const cell=v=>`<td class="${v?'':'zero'}">${v?fmt(v):'—'}</td>`;
+    DATA.agents.forEach(a=>{
+      body.insertAdjacentHTML('beforeend',
+        `<tr><td>${a.name}</td>${cell(a.q[0])}${cell(a.q[1])}${cell(a.q[2])}${cell(a.q[3])}<td><b>${a.closed?fmt(a.closed):'—'}</b></td>${cell(a.escrow)}</tr>`);
+    });
+    body.insertAdjacentHTML('beforeend',
+      `<tr class="totrow"><td>Team Total</td>${cell(DATA.totals.q[0])}${cell(DATA.totals.q[1])}${cell(DATA.totals.q[2])}${cell(DATA.totals.q[3])}<td>${fmt(DATA.totals.closed)}</td>${cell(DATA.totals.escrow)}</tr>`);
+    document.getElementById('asof').textContent='Source: '+DATA.fileName+' · Summaries tab';
+  } else {
+    wrap.style.display='none';
+  }
+}
+
+fmtBase();
+render();
+</script>
+</body>
+</html>
