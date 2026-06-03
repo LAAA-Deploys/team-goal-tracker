@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>if(location.protocol==='http:'&&!/^(localhost|127\.|\[?::1)/.test(location.hostname))location.replace('https://'+location.host+location.pathname+location.search);</script>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="robots" content="noindex, nofollow" />
@@ -89,6 +90,13 @@
 
   footer{font-size:12px;color:var(--muted);margin-top:24px;text-align:center;line-height:1.6}
 
+  /* countdown */
+  .countdown{display:flex;align-items:center;justify-content:center;gap:14px;background:linear-gradient(135deg,var(--navy),var(--navy-800));
+    color:#fff;border-radius:14px;padding:16px 22px;margin-bottom:18px;box-shadow:var(--shadow);text-align:center;flex-wrap:wrap}
+  .countdown .cd-num{font-size:36px;font-weight:900;color:var(--orange);letter-spacing:-.02em;line-height:1}
+  .countdown .cd-label{font-size:14.5px;font-weight:600;color:#cdd7e6}
+  .countdown .cd-label b{color:#fff}
+
   /* lockscreen */
   .lockscreen{position:fixed;inset:0;z-index:50;background:linear-gradient(135deg,var(--navy-900),var(--navy));
     display:flex;align-items:center;justify-content:center;padding:20px}
@@ -159,15 +167,20 @@
         <div class="pctlabel" id="pctLabel"></div>
       </div>
       <div class="legend">
-        <span><i class="dot base"></i> Starting line (1/1/2026)</span>
+        <span><i class="dot base"></i> Starting line (4/15/2020)</span>
         <span><i class="dot add"></i> Closed in 2026</span>
         <span><i class="dot gap"></i> Remaining to $20M</span>
       </div>
       <div class="gapline" id="gapLine"></div>
     </div>
 
+    <div class="countdown">
+      <span class="cd-num" id="cdDays">—</span>
+      <span class="cd-label">days left to hit $20M &middot; deadline <b>April 14, 2027</b></span>
+    </div>
+
     <div class="stats">
-      <div class="stat"><div class="k">Starting line (1/1/26)</div><div class="v muted" id="sBase">—</div><div class="note">cumulative team gross</div></div>
+      <div class="stat"><div class="k">Starting line (4/15/2020)</div><div class="v muted" id="sBase">—</div><div class="note">cumulative team gross</div></div>
       <div class="stat"><div class="k">Closed in 2026</div><div class="v" id="sClosed">—</div><div class="note">added this year</div></div>
       <div class="stat"><div class="k">In escrow now</div><div class="v muted" id="sEscrow">—</div><div class="note">near-certain pipeline</div></div>
       <div class="stat"><div class="k">Remaining to $20M</div><div class="v" id="sGap">—</div><div class="note">gross still to close</div></div>
@@ -190,6 +203,15 @@ const LS_PW = 'laaa_goal_pw';
 const b64dec = s => Uint8Array.from(atob(s), c=>c.charCodeAt(0));
 
 let ENC = null; // the encrypted payload, fetched once
+
+// live countdown to the goal deadline
+function updateCountdown(){
+  const deadline = new Date(2027, 3, 14); // April 14, 2027 (month is 0-indexed)
+  const today = new Date(); today.setHours(0,0,0,0);
+  const days = Math.max(0, Math.round((deadline - today)/86400000));
+  document.getElementById('cdDays').textContent = days.toLocaleString('en-US');
+}
+updateCountdown();
 
 async function decryptWith(password){
   if(!ENC) throw new Error('no payload');
